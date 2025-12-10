@@ -12,7 +12,7 @@ function App() {
     <Router>
       <div className="App">
         <header style={{
-          background: '#e6b5c7ff',
+          background: '#DEB887',
           color: 'white',
           padding: '20px',
           display: 'flex',
@@ -38,7 +38,7 @@ function App() {
         </main>
 
         <footer style={{
-          background: '#333',
+          background: '#DEB887',
           color: 'white',
           padding: '20px',
           marginTop: '50px',
