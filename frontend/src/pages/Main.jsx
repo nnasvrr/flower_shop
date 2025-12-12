@@ -1,21 +1,17 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import './Main.css';
 
 const Main = () => {
   return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
-      <h1>Добро пожаловать в FlowersShop </h1>
-      <p>Свежие цветы с доставкой по всему городу</p>
-      <button style={{ 
-        padding: '10px 20px', 
-        background: '#b06b6bff', 
-        color: 'white',
-        border: 'none', 
-        borderRadius: '5px',
-        fontSize: '16px',
-        cursor: 'pointer'
-      }}>
+    <div className="main-container">
+      <h1 className="main-title">Добро пожаловать в FlowersShop</h1>
+      <p className="main-subtitle">
+        Свежие цветы с доставкой по всему городу
+      </p>
+      <Link to="/catalog" className="main-cta-button">
         Перейти в каталог
-      </button>
+      </Link>
     </div>
   );
 };

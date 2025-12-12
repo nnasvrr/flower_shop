@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { flowerAPI } from '../services/api';
+import './Catalog.css';
 
 const Catalog = () => {
   const [flowers, setFlowers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [error, setError] = useState(null);
 
-  // Загружаем данные при загрузке компонента и при изменении категории
   useEffect(() => {
     fetchData();
   }, [selectedCategory]);
@@ -15,46 +16,78 @@ const Catalog = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
+      setError(null);
       
-      // 1. Загружаем категории - ВАЖНО: получаем data.results, а не data
       const categoriesResponse = await flowerAPI.getCategories();
-      setCategories(categoriesResponse.data.results || []); // <- ИЗМЕНЕНИЕ ЗДЕСЬ
+      setCategories(categoriesResponse.data.results || []);
       
-      // 2. Загружаем товары (с фильтром если выбрана категория)
       const params = selectedCategory ? { category: selectedCategory } : {};
       const flowersResponse = await flowerAPI.getAll(params);
-      setFlowers(flowersResponse.data.results || []); // Аналогично для товаров
+      setFlowers(flowersResponse.data.results || []);
       
     } catch (error) {
       console.error('Ошибка при загрузке данных:', error);
+      setError('Не удалось загрузить данные с сервера');
     } finally {
       setLoading(false);
     }
   };
 
-  // Показываем загрузку
+  const getImageUrl = (flower) => {
+    if (flower.image) {
+      if (flower.image.startsWith('http')) {
+        return flower.image;
+      }
+      return `http://127.0.0.1:8000${flower.image}`;
+    }
+    
+    if (flower.image_url) {
+      return flower.image_url;
+    }
+    
+    return 'https://via.placeholder.com/250x200/FFC0CB/FFFFFF?text=Flower';
+  };
+
+  const handleImageError = (e) => {
+    e.target.src = 'https://via.placeholder.com/250x200/FFC0CB/FFFFFF?text=Нет+фото';
+  };
+
   if (loading) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
+      <div className="loading-container">
         <p>Загрузка товаров...</p>
       </div>
     );
   }
 
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2 className="error-title">Ошибка</h2>
+        <p className="error-message">{error}</p>
+        <button 
+          className="error-retry-button"
+          onClick={fetchData}
+        >
+          Повторить попытку
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Каталог цветов</h2>
+    <div className="catalog-container">
+      <h2 className="catalog-title">Каталог цветов</h2>
       
-      {/* Фильтр по категориям */}
-      <div style={{ marginBottom: '20px' }}>
-        <label style={{ marginRight: '10px' }}>Категория: </label>
+      <div className="filter-container">
+        <label className="filter-label">Фильтр по категории: </label>
         <select 
           value={selectedCategory} 
           onChange={(e) => setSelectedCategory(e.target.value)}
-          style={{ padding: '5px', minWidth: '150px' }}
+          className="filter-select"
         >
           <option value="">Все категории</option>
-          {Array.isArray(categories) && categories.map(category => ( // <- Добавлена проверка
+          {Array.isArray(categories) && categories.map(category => (
             <option key={category.id} value={category.id}>
               {category.name}
             </option>
@@ -62,57 +95,58 @@ const Catalog = () => {
         </select>
       </div>
       
-      {/* Сетка товаров */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-        gap: '20px',
-        marginTop: '20px'
-      }}>
-        {Array.isArray(flowers) && flowers.map(flower => ( // <- Добавлена проверка
-          <div 
-            key={flower.id} 
-            style={{ 
-              border: '1px solid #ddd', 
-              padding: '15px', 
-              borderRadius: '8px',
-              backgroundColor: 'white',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-            }}
-          >
-            <h3 style={{ marginBottom: '10px' }}>{flower.name}</h3>
-            <p style={{ color: '#666', marginBottom: '10px' }}>{flower.description}</p>
-            <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#b06b6bff' }}>
-              Цена: {flower.price} ₽
-            </p>
-            <p style={{ color: '#888', fontSize: '14px' }}>
-              Категория: {flower.category_name}
-            </p>
-            <p style={{ 
-              color: flower.in_stock ? 'green' : 'red',
-              fontWeight: 'bold'
-            }}>
-              {flower.in_stock ? '✓ В наличии' : '✗ Нет в наличии'}
-            </p>
+      <div className="products-grid">
+        {Array.isArray(flowers) && flowers.map(flower => (
+          <div key={flower.id} className="product-card">
+            <div className="product-image-container">
+              <img 
+                src={getImageUrl(flower)} 
+                alt={flower.name}
+                className="product-image"
+                onError={handleImageError}
+              />
+            </div>
+            
+            <div className="product-info">
+              <h3 className="product-name">{flower.name}</h3>
+              
+              {/* УДАЛЕН БЛОК С ОПИСАНИЕМ */}
+              
+              <div className="product-price-stock">
+                <span className="product-price">
+                  {flower.price} ₽
+                </span>
+                
+                <span className={`product-stock ${flower.in_stock ? 'product-in-stock' : 'product-out-of-stock'}`}>
+                  {flower.in_stock ? 'В наличии' : 'Нет в наличии'}
+                </span>
+              </div>
+              
+              <p className="product-category">
+                <span className="category-label">Категория:</span>
+                {flower.category_name || 'Без категории'}
+              </p>
+              
+              {flower.discount_price && (
+                <p className="product-discount">
+                  Скидка: {flower.discount_price} ₽
+                </p>
+              )}
+            </div>
           </div>
         ))}
       </div>
       
-      {/* Если товаров нет */}
-      {flowers.length === 0 && (
-        <div style={{ textAlign: 'center', marginTop: '40px', padding: '40px' }}>
-          <p style={{ fontSize: '18px', color: '#666' }}>Товары не найдены</p>
+      {flowers.length === 0 && !loading && (
+        <div className="empty-catalog">
+          <div className="empty-catalog-icon"></div>
+          <p className="empty-catalog-title">Товары не найдены</p>
+          <p className="empty-catalog-subtitle">
+            Попробуйте выбрать другую категорию
+          </p>
           <button 
+            className="empty-catalog-button"
             onClick={() => setSelectedCategory('')}
-            style={{
-              marginTop: '20px',
-              padding: '10px 20px',
-              background: '#b06b6bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer'
-            }}
           >
             Показать все товары
           </button>

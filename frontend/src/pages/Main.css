@@ -1,0 +1,39 @@
+/* Main.minimal.css */
+.main-container {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.main-title {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.main-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+}
+
+.main-cta-button {
+  padding: 12px 30px;
+  background: #b06b6bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.main-cta-button:hover {
+  background-color: #9a5a5a;
+}

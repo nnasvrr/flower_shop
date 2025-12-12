@@ -1,0 +1,148 @@
+/* Login.css */
+
+.login-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.login-title {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+  font-size: 24px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #b06b6bff;
+  box-shadow: 0 0 0 3px rgba(176, 107, 107, 0.1);
+}
+
+.form-input:hover {
+  border-color: #b06b6bff;
+}
+
+.login-button {
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #b06b6bff, #d8a5a5);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: 10px;
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(176, 107, 107, 0.3);
+}
+
+.login-button:active {
+  transform: translateY(0);
+}
+
+/* Дополнительные элементы */
+.login-footer {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+.login-link {
+  color: #b06b6bff;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 5px;
+  transition: color 0.3s;
+}
+
+.login-link:hover {
+  color: #9a5a5a;
+  text-decoration: underline;
+}
+
+/* Сообщения об ошибках */
+.error-message {
+  color: #f44336;
+  font-size: 13px;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Индикатор загрузки */
+.login-loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .login-container {
+    margin: 20px;
+    padding: 20px;
+  }
+  
+  .login-title {
+    font-size: 20px;
+  }
+  
+  .form-input {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+  
+  .login-button {
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+}
