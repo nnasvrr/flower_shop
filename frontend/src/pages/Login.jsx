@@ -1,123 +1,133 @@
 import React, { useState } from 'react';
-import './Login.css'; // Импорт CSS файла
+import { Link, useNavigate } from 'react-router-dom';
+import './Login.css';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  
+  const [loginData, setLoginData] = useState({
+    login: '',
+    password: ''
+  });
+  
   const [errors, setErrors] = useState({});
+  const [showErrors, setShowErrors] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     
-    // Валидация
+    if (name === 'login') {
+      if (value && !/^[a-zA-Z0-9_]*$/.test(value)) return;
+    }
+    
+    setLoginData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+    if (errors.general) setErrors(prev => ({ ...prev, general: '' }));
+  };
+
+  const validateForm = () => {
     const newErrors = {};
-    if (!email) {
-      newErrors.email = 'Email обязателен';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Неверный формат email';
+    
+    if (!loginData.login.trim()) {
+      newErrors.login = 'Логин обязателен';
+    } else if (loginData.login.length < 3) {
+      newErrors.login = 'Минимум 3 символа';
+    } else if (!/^[a-zA-Z0-9_]+$/.test(loginData.login)) {
+      newErrors.login = 'Только латиница и цифры';
     }
     
-    if (!password) {
+    if (!loginData.password) {
       newErrors.password = 'Пароль обязателен';
-    } else if (password.length < 6) {
-      newErrors.password = 'Пароль должен быть не менее 6 символов';
+    } else if (loginData.password.length < 6) {
+      newErrors.password = 'Минимум 6 символов';
     }
     
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
+    return newErrors;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const validationErrors = validateForm();
+    
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setShowErrors(true);
+      return false;
     }
     
-    // Сброс ошибок
-    setErrors({});
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const userExists = users.some(user => 
+      user.login === loginData.login && user.password === loginData.password
+    );
     
-    // Имитация запроса на сервер
-    try {
-      setLoading(true);
-      console.log('Отправка данных:', { email, password });
-      
-      // Здесь будет реальный запрос к API
-      // await api.post('/auth/login/', { email, password });
-      
-      // Имитация задержки
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      alert('Вход выполнен успешно!');
-      // Здесь обычно редирект или обновление состояния приложения
-      
-    } catch (error) {
-      console.error('Ошибка входа:', error);
+    if (userExists) {
+      localStorage.setItem('currentUser', JSON.stringify({
+        login: loginData.login,
+        isAuthenticated: true
+      }));
+      window.location.href = '/';
+    } else {
       setErrors({ 
-        general: 'Неверный email или пароль. Попробуйте снова.' 
+        general: 'Неверный логин или пароль' 
       });
-    } finally {
-      setLoading(false);
+      setShowErrors(true);
     }
+    
+    return false;
   };
 
   return (
     <div className="login-container">
-      <h2 className="login-title">Вход в аккаунт</h2>
+      <h2>Вход в аккаунт</h2>
       
-      {errors.general && (
-        <div className="error-message" style={{ marginBottom: '20px' }}>
-          ⚠️ {errors.general}
+      {showErrors && Object.keys(errors).length > 0 && (
+        <div className="error-window">
+          <div className="error-header">
+            <h3>Ошибки:</h3>
+            <button onClick={() => setShowErrors(false)}>×</button>
+          </div>
+          <div className="error-list">
+            {errors.login && <div key="login">⚠️ {errors.login}</div>}
+            {errors.password && <div key="password">⚠️ {errors.password}</div>}
+            {errors.general && <div key="general">⚠️ {errors.general}</div>}
+          </div>
         </div>
       )}
       
-      <form className="login-form" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label className="form-label">Email:</label>
-          <input 
-            type="email" 
-            className="form-input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="ваш@email.com"
-            disabled={loading}
+          <label>Логин</label>
+          <input
+            type="text"
+            name="login"
+            value={loginData.login}
+            onChange={handleChange}
+            placeholder="Введите логин"
+            className={errors.login || errors.general ? 'error' : ''}
           />
-          {errors.email && (
-            <div className="error-message">⚠️ {errors.email}</div>
-          )}
         </div>
         
         <div className="form-group">
-          <label className="form-label">Пароль:</label>
-          <input 
-            type="password" 
-            className="form-input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+          <label>Пароль</label>
+          <input
+            type="password"
+            name="password"
+            value={loginData.password}
+            onChange={handleChange}
             placeholder="Введите пароль"
-            disabled={loading}
+            className={errors.password || errors.general ? 'error' : ''}
           />
-          {errors.password && (
-            <div className="error-message">⚠️ {errors.password}</div>
-          )}
         </div>
         
-        <button 
-          type="submit" 
-          className="login-button"
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              <span className="login-loading"></span>
-              Вход...
-            </>
-          ) : 'Войти'}
+        <button type="submit" className="submit-btn">
+          Войти
         </button>
       </form>
       
       <div className="login-footer">
-        Нет аккаунта? 
-        <a href="/register" className="login-link">Зарегистрироваться</a>
-      </div>
-      
-      <div className="login-footer" style={{ marginTop: '10px' }}>
-        <a href="/forgot-password" className="login-link">Забыли пароль?</a>
+        Нет аккаунта? <Link to="/registration">Зарегистрироваться</Link>
       </div>
     </div>
   );

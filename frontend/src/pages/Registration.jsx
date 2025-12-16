@@ -1,74 +1,244 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Registration.css';
 
 const Registration = () => {
+  const navigate = useNavigate(); 
+  
   const [formData, setFormData] = useState({
+    login: '',
+    nickname: '',
     firstName: '',
     lastName: '',
+    middleName: '',
+    gender: '',
     email: '',
+    phone: '+7 ',
     password: '',
     confirmPassword: '',
-    agreeToTerms: false
+    agreeToData: false,
+    agreeToOffer: false,
+    agreeToPrivacy: false
   });
   
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState('');
+  const [showErrors, setShowErrors] = useState(false);
+  const [modalContent, setModalContent] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  const phoneRef = useRef(null);
+
+  const handleOpenModal = (content) => {
+    setModalContent(content);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setModalContent('');
+  };
+
+  const renderDocument = (type) => {
+    const documents = {
+      data: {
+        title: 'Согласие на обработку персональных данных',
+        content: 'Я даю согласие на обработку моих персональных данных для регистрации и использования сервиса'
+      },
+      offer: {
+        title: 'Договор публичной оферты',
+        content: 'Настоящий договор регулирует условия использования сервиса при регистрации на сайте'
+      },
+      privacy: {
+        title: 'Политика конфиденциальности',
+        content: 'Мы защищаем ваши персональные данные и обеспечиваем их конфиденциальность.'
+      }
+    };
+    
+    const doc = documents[type];
+    return (
+      <div className="document-modal">
+        <h3>{doc.title}</h3>
+        <div className="document-content">
+          {doc.content}
+        </div>
+        <button onClick={handleCloseModal}>Закрыть</button>
+      </div>
+    );
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    
+    if (name === 'firstName' || name === 'lastName' || name === 'middleName') {
+      if (value && !/^[а-яА-ЯёЁ\s-]*$/.test(value)) return;
+    }
+    
+    if (name === 'login') {
+      if (value && !/^[a-zA-Z0-9_]*$/.test(value)) return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
     
-    // Сброс ошибки при изменении поля
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
+  };
+
+  const handlePhoneChange = (e) => {
+    let value = e.target.value;
     
-    // Проверка силы пароля
-    if (name === 'password') {
-      checkPasswordStrength(value);
+    if (value.length < 4) {
+      setFormData(prev => ({ ...prev, phone: '+7 ' }));
+      return;
+    }
+    
+    const numbers = value.replace(/\D/g, '').slice(1);
+    
+    let formatted = '+7 ';
+    
+    if (numbers.length > 0) {
+      formatted += '(' + numbers.substring(0, 3);
+    }
+    if (numbers.length >= 3) {
+      formatted += ') ' + numbers.substring(3, 6);
+    }
+    if (numbers.length >= 6) {
+      formatted += '-' + numbers.substring(6, 8);
+    }
+    if (numbers.length >= 8) {
+      formatted += '-' + numbers.substring(8, 10);
+    }
+    
+    setFormData(prev => ({ ...prev, phone: formatted }));
+    if (errors.phone) setErrors(prev => ({ ...prev, phone: '' }));
+  };
+
+  const handlePhoneKeyDown = (e) => {
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      
+      const cursorPos = e.target.selectionStart;
+      const value = e.target.value;
+      
+      if (cursorPos <= 4) {
+        setFormData(prev => ({ ...prev, phone: '+7 ' }));
+        setTimeout(() => {
+          if (phoneRef.current) phoneRef.current.setSelectionRange(4, 4);
+        }, 0);
+        return;
+      }
+      
+      if (value === '+7 ') {
+        return;
+      }
+      
+      const numbers = value.replace(/\D/g, '').slice(1);
+      
+      if (numbers.length > 0) {
+        const newNumbers = numbers.slice(0, -1);
+        
+        let formatted = '+7 ';
+        
+        if (newNumbers.length > 0) {
+          formatted += '(' + newNumbers.substring(0, 3);
+        }
+        if (newNumbers.length >= 3) {
+          formatted += ') ' + newNumbers.substring(3, 6);
+        }
+        if (newNumbers.length >= 6) {
+          formatted += '-' + newNumbers.substring(6, 8);
+        }
+        if (newNumbers.length >= 8) {
+          formatted += '-' + newNumbers.substring(8, 10);
+        }
+        
+        setFormData(prev => ({ ...prev, phone: formatted }));
+        
+        setTimeout(() => {
+          if (phoneRef.current) {
+            let newCursorPos = cursorPos - 1;
+            
+            if (formatted.length < value.length) {
+              if (cursorPos === 9 || cursorPos === 13 || cursorPos === 16) {
+                newCursorPos = cursorPos - 2;
+              }
+            }
+            
+            phoneRef.current.setSelectionRange(newCursorPos, newCursorPos);
+          }
+        }, 0);
+      }
     }
   };
 
-  const checkPasswordStrength = (password) => {
-    let strength = '';
-    if (password.length === 0) {
-      strength = '';
-    } else if (password.length < 6) {
-      strength = 'weak';
-    } else if (password.length < 8 || !/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
-      strength = 'medium';
-    } else {
-      strength = 'strong';
-    }
-    setPasswordStrength(strength);
+  const handlePhoneFocus = () => {
+    setTimeout(() => {
+      if (phoneRef.current) {
+        const phone = phoneRef.current.value;
+        if (phone === '+7 ') {
+          phoneRef.current.setSelectionRange(4, 4);
+        }
+      }
+    }, 0);
   };
 
   const validateForm = () => {
     const newErrors = {};
     
+    if (!formData.login.trim()) {
+      newErrors.login = 'Логин обязателен';
+    } else if (formData.login.length < 3) {
+      newErrors.login = 'Минимум 3 символа';
+    } else if (!/^[a-zA-Z0-9_]+$/.test(formData.login)) {
+      newErrors.login = 'Только латиница и цифры';
+    }
+    
+    if (!formData.nickname.trim()) {
+      newErrors.nickname = 'Никнейм обязателен';
+    } else if (formData.nickname.length > 50) {
+      newErrors.nickname = 'Максимум 50 символов';
+    }
+    
     if (!formData.firstName.trim()) {
       newErrors.firstName = 'Имя обязательно';
+    } else if (!/^[а-яА-ЯёЁ\s-]+$/.test(formData.firstName)) {
+      newErrors.firstName = 'Только кириллица';
     }
     
     if (!formData.lastName.trim()) {
       newErrors.lastName = 'Фамилия обязательна';
+    } else if (!/^[а-яА-ЯёЁ\s-]+$/.test(formData.lastName)) {
+      newErrors.lastName = 'Только кириллица';
+    }
+    
+    if (formData.middleName && !/^[а-яА-ЯёЁ\s-]*$/.test(formData.middleName)) {
+      newErrors.middleName = 'Только кириллица';
+    }
+    
+    if (!formData.gender) {
+      newErrors.gender = 'Выберите пол';
     }
     
     if (!formData.email.trim()) {
       newErrors.email = 'Email обязателен';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Неверный формат email';
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newErrors.email = 'Неверный формат';
+    }
+    
+    if (!formData.phone.trim() || formData.phone === '+7 ') {
+      newErrors.phone = 'Телефон обязателен';
+    } else if (!/^\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$/.test(formData.phone)) {
+      newErrors.phone = 'Введите полный номер: +7 (XXX) XXX-XX-XX';
     }
     
     if (!formData.password) {
       newErrors.password = 'Пароль обязателен';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Пароль должен быть не менее 6 символов';
+      newErrors.password = 'Минимум 6 символов';
     }
     
     if (!formData.confirmPassword) {
@@ -77,187 +247,279 @@ const Registration = () => {
       newErrors.confirmPassword = 'Пароли не совпадают';
     }
     
-    if (!formData.agreeToTerms) {
-      newErrors.agreeToTerms = 'Необходимо согласие с условиями';
+    if (!formData.agreeToData) {
+      newErrors.agreeToData = 'Необходимо согласие';
+    }
+    
+    if (!formData.agreeToOffer) {
+      newErrors.agreeToOffer = 'Примите договор оферты';
+    }
+    
+    if (!formData.agreeToPrivacy) {
+      newErrors.agreeToPrivacy = 'Примите политику конфиденциальности';
     }
     
     return newErrors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     
     const validationErrors = validateForm();
+    
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      return;
+      setShowErrors(true);
+      return false;
     }
+    setLoading(true);
     
-    try {
-      setLoading(true);
-      console.log('Регистрация:', formData);
+    setTimeout(() => {
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      const loginExists = users.some(user => user.login === formData.login);
       
-      // Здесь будет реальный запрос к API
-      // await api.post('/auth/register/', formData);
+      if (loginExists) {
+        setErrors({ login: 'Этот логин уже занят' });
+        setShowErrors(true);
+        setLoading(false);
+        return;
+      }
+      const newUser = {
+        login: formData.login,
+        password: formData.password,
+        email: formData.email,
+        phone: formData.phone,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        nickname: formData.nickname,
+        gender: formData.gender,
+        middleName: formData.middleName
+      };
       
-      // Имитация задержки
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      users.push(newUser);
+      localStorage.setItem('users', JSON.stringify(users));
       
-      alert('Регистрация успешна! Проверьте вашу почту для подтверждения.');
-      // Здесь обычно редирект на страницу входа или подтверждения
-      
-    } catch (error) {
-      console.error('Ошибка регистрации:', error);
-      setErrors({ 
-        general: 'Ошибка при регистрации. Попробуйте снова.' 
-      });
-    } finally {
+      localStorage.setItem('currentUser', JSON.stringify({
+        login: formData.login,
+        isAuthenticated: true
+      }));
+      navigate('/Login');
       setLoading(false);
-    }
+    }, 1000);
+    
+    return false;
   };
 
   return (
     <div className="registration-container">
-      <h2 className="registration-title">Регистрация</h2>
-      <p className="registration-subtitle">
-        Создайте аккаунт для совершения покупок
-      </p>
+      <h2>Регистрация</h2>
       
-      {errors.general && (
-        <div className="error-message" style={{ marginBottom: '20px' }}>
-          ⚠️ {errors.general}
+      {showErrors && Object.keys(errors).length > 0 && (
+        <div className="error-window">
+          <div className="error-header">
+            <h3>Ошибки:</h3>
+            <button onClick={() => setShowErrors(false)}>×</button>
+          </div>
+          <div className="error-list">
+            {Object.values(errors).map((error, index) => (
+              <div key={index}>⚠️ {error}</div>
+            ))}
+          </div>
         </div>
       )}
       
-      <form className="registration-form" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Логин</label>
+          <input
+            type="text"
+            name="login"
+            value={formData.login}
+            onChange={handleChange}
+            placeholder="Введите логин"
+            className={errors.login ? 'error' : ''}
+          />
+        </div>
+        
+        <div className="form-group">
+          <label>Никнейм</label>
+          <input
+            type="text"
+            name="nickname"
+            value={formData.nickname}
+            onChange={handleChange}
+            placeholder="Введите никнейм"
+            maxLength={50}
+            className={errors.nickname ? 'error' : ''}
+          />
+        </div>
+        
         <div className="form-row">
           <div className="form-group">
-            <label className="form-label required">Имя:</label>
-            <input 
-              type="text" 
+            <label>Имя</label>
+            <input
+              type="text"
               name="firstName"
-              className={`form-input ${errors.firstName ? 'error' : ''}`}
               value={formData.firstName}
               onChange={handleChange}
               placeholder="Введите имя"
-              disabled={loading}
+              className={errors.firstName ? 'error' : ''}
             />
-            {errors.firstName && (
-              <div className="error-message">⚠️ {errors.firstName}</div>
-            )}
           </div>
-          
           <div className="form-group">
-            <label className="form-label required">Фамилия:</label>
-            <input 
-              type="text" 
+            <label>Фамилия</label>
+            <input
+              type="text"
               name="lastName"
-              className={`form-input ${errors.lastName ? 'error' : ''}`}
               value={formData.lastName}
               onChange={handleChange}
               placeholder="Введите фамилию"
-              disabled={loading}
+              className={errors.lastName ? 'error' : ''}
             />
-            {errors.lastName && (
-              <div className="error-message">⚠️ {errors.lastName}</div>
-            )}
           </div>
         </div>
         
         <div className="form-group">
-          <label className="form-label required">Email:</label>
-          <input 
-            type="email" 
+          <label>Отчество</label>
+          <input
+            type="text"
+            name="middleName"
+            value={formData.middleName}
+            onChange={handleChange}
+            placeholder="Введите отчество"
+            className={errors.middleName ? 'error' : ''}
+          />
+        </div>
+        
+        <div className="form-group">
+          <label>Пол</label>
+          <select
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            className={errors.gender ? 'error' : ''}
+          >
+            <option value="">Выберите пол</option>
+            <option value="male">Мужской</option>
+            <option value="female">Женский</option>
+            <option value="not_specified">Не указан</option>
+          </select>
+        </div>
+        
+        <div className="form-group">
+          <label>Email</label>
+          <input
+            type="email"
             name="email"
-            className={`form-input ${errors.email ? 'error' : ''}`}
             value={formData.email}
             onChange={handleChange}
-            placeholder="ваш@email.com"
-            disabled={loading}
+            placeholder="example@mail.com"
+            className={errors.email ? 'error' : ''}
           />
-          {errors.email && (
-            <div className="error-message">⚠️ {errors.email}</div>
-          )}
         </div>
         
         <div className="form-group">
-          <label className="form-label required">Пароль:</label>
-          <input 
-            type="password" 
+          <label>Телефон</label>
+          <input
+            type="tel"
+            ref={phoneRef}
+            value={formData.phone}
+            onChange={handlePhoneChange}
+            onKeyDown={handlePhoneKeyDown}
+            onFocus={handlePhoneFocus}
+            placeholder="+7 (XXX) XXX-XX-XX"
+            className={errors.phone ? 'error' : ''}
+          />
+        </div>
+        
+        <div className="form-group">
+          <label>Пароль</label>
+          <input
+            type="password"
             name="password"
-            className={`form-input ${errors.password ? 'error' : ''}`}
             value={formData.password}
             onChange={handleChange}
-            placeholder="Не менее 6 символов"
-            disabled={loading}
+            placeholder="Придумайте пароль"
+            className={errors.password ? 'error' : ''}
           />
-          {errors.password ? (
-            <div className="error-message">⚠️ {errors.password}</div>
-          ) : passwordStrength && (
-            <div className={`password-strength ${passwordStrength}`}>
-              Сложность пароля: {
-                passwordStrength === 'weak' ? 'Слабый' :
-                passwordStrength === 'medium' ? 'Средний' : 'Сильный'
-              }
-            </div>
-          )}
         </div>
         
         <div className="form-group">
-          <label className="form-label required">Подтвердите пароль:</label>
-          <input 
-            type="password" 
+          <label>Подтвердите пароль</label>
+          <input
+            type="password"
             name="confirmPassword"
-            className={`form-input ${errors.confirmPassword ? 'error' : ''}`}
             value={formData.confirmPassword}
             onChange={handleChange}
             placeholder="Повторите пароль"
-            disabled={loading}
+            className={errors.confirmPassword ? 'error' : ''}
           />
-          {errors.confirmPassword && (
-            <div className="error-message">⚠️ {errors.confirmPassword}</div>
+        </div>
+        
+        <div className="agreements">
+          <div className="agreement-item">
+            <input
+              type="checkbox"
+              name="agreeToData"
+              checked={formData.agreeToData}
+              onChange={handleChange}
+              id="agreeToData"
+            />
+            <label htmlFor="agreeToData">
+              Я согласен с <span className="document-link" onClick={() => handleOpenModal('data')}>обработкой персональных данных</span>*
+            </label>
+          </div>
+          
+          <div className="agreement-item">
+            <input
+              type="checkbox"
+              name="agreeToOffer"
+              checked={formData.agreeToOffer}
+              onChange={handleChange}
+              id="agreeToOffer"
+            />
+            <label htmlFor="agreeToOffer">
+              Я принимаю <span className="document-link" onClick={() => handleOpenModal('offer')}>договор публичной оферты</span>*
+            </label>
+          </div>
+          
+          <div className="agreement-item">
+            <input
+              type="checkbox"
+              name="agreeToPrivacy"
+              checked={formData.agreeToPrivacy}
+              onChange={handleChange}
+              id="agreeToPrivacy"
+            />
+            <label htmlFor="agreeToPrivacy">
+              Я принимаю <span className="document-link" onClick={() => handleOpenModal('privacy')}>политику конфиденциальности</span>*
+            </label>
+          </div>
+          
+          {(errors.agreeToData || errors.agreeToOffer || errors.agreeToPrivacy) && (
+            <div className="error-text">⚠️ Все соглашения обязательны</div>
           )}
         </div>
         
-        <div className="checkbox-group">
-          <input 
-            type="checkbox" 
-            name="agreeToTerms"
-            id="agreeToTerms"
-            className="checkbox-input"
-            checked={formData.agreeToTerms}
-            onChange={handleChange}
-            disabled={loading}
-          />
-          <label htmlFor="agreeToTerms" className="checkbox-label">
-            Я согласен с <a href="/terms">условиями использования</a> и{' '}
-            <a href="/privacy">политикой конфиденциальности</a>
-          </label>
-        </div>
-        {errors.agreeToTerms && (
-          <div className="error-message">⚠️ {errors.agreeToTerms}</div>
-        )}
-        
-        <button 
-          type="submit" 
-          className="registration-button"
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              <span className="registration-loading"></span>
-              Регистрация...
-            </>
-          ) : 'Зарегистрироваться'}
+        <button type="submit" disabled={loading} className="submit-btn">
+          {loading ? 'Регистрация...' : 'Зарегистрироваться'}
         </button>
       </form>
       
-      <div className="registration-footer">
-        Уже есть аккаунт? 
-        <Link to="/login" className="registration-link">
-          Войти
-        </Link>
+      <div className="login-link">
+        Уже есть аккаунт? <Link to="/login">Войти</Link>
       </div>
+
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            {modalContent === 'data' && renderDocument('data')}
+            {modalContent === 'offer' && renderDocument('offer')}
+            {modalContent === 'privacy' && renderDocument('privacy')}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
