@@ -1,31 +1,22 @@
-/* App.css */
-
-/* Основной контейнер приложения */
 .App {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
-
-/* Шапка сайта */
 .app-header {
   background: #DEB887;
   color: white;
   padding: 20px;
 }
-
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
 .logo {
   margin: 0;
   font-size: 28px;
 }
-
-/* Навигация */
 .nav-links {
   display: flex;
   align-items: center;
@@ -34,14 +25,12 @@
   margin: 0;
   padding: 0;
 }
-
 .nav-link {
   color: white;
   text-decoration: none;
   padding: 8px 12px;
   border-radius: 4px;
 }
-
 .nav-link:hover {
   color: white !important;
   background-color: transparent !important;
@@ -49,7 +38,6 @@
 .user-greeting {
   margin: 0 10px;
 }
-
 .logout-btn {
   background: white;
   color: #DEB887;
@@ -59,19 +47,14 @@
   cursor: pointer;
   font-weight: bold;
 }
-
 .logout-btn:hover {
   background: #f0f0f0;
 }
-
-/* Основной контент */
 .app-main {
   min-height: 70vh;
   padding: 20px;
   flex: 1;
 }
-
-/* Футер */
 .app-footer {
   background: #DEB887;
   color: white;

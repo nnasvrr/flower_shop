@@ -10,19 +10,10 @@ const api = axios.create({
 });
 
 export const flowerAPI = {
-  // Получить все товары с параметрами
-  getAll: (params = {}) => api.get('/flowers/', { params }),
-  
-  // Получить один товар
-  getById: (id) => api.get(`/flowers/${id}/`),
-  
-  // Получить категории
-  getCategories: () => api.get('/categories/'),
-  
-  // Фильтрация
-  filterByCategory: (categoryId) => api.get(`/flowers/?category=${categoryId}`),
-  
-  // Поиск
+  getAll: (params = {}) => api.get('/flowers/', { params }), 
+  getById: (id) => api.get(`/flowers/${id}/`), 
+  getCategories: () => api.get('/categories/'), 
+  filterByCategory: (categoryId) => api.get(`/flowers/?category=${categoryId}`), 
   search: (query) => api.get(`/flowers/?search=${query}`),
 };
 

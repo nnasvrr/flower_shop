@@ -38,9 +38,7 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 25px;
   margin-top: 20px;
-}
-
-/* Карточка товара */
+} 
 .product-card {
   width: 300px;
   height: 500px;
@@ -51,77 +49,59 @@
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-}
-
+} 
 .product-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-/* Изображение товара */
+} 
 .product-image-container {
   height: 300px;
   overflow: hidden;
   background-color: #f9f9f9;
-}
-
+} 
 .product-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
-}
-
+} 
 .product-card:hover .product-image {
   transform: scale(1.05);
-}
-
-/* Информация о товаре */
+} 
 .product-info {
   padding: 20px;
-}
-
+} 
 .product-name {
-  margin: 0 0 20px 0; /* Увеличить отступ снизу, так как нет описания */
+  margin: 0 0 20px 0; 
   font-size: 18px;
   color: #333;
   line-height: 1.3;
-}
-
-
-
-/* Цена и наличие */
+} 
 .product-price-stock {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-}
-
+} 
 .product-price {
   font-size: 20px;
   font-weight: bold;
   color: #b06b6bff;
-}
-
+} 
 .product-stock {
   font-weight: bold;
   font-size: 14px;
   padding: 4px 10px;
   border-radius: 12px;
-}
-
+} 
 .product-in-stock {
-  color: #4CAF50;
-  background-color: #E8F5E9;
-}
-
+  background: #b06b6bff;
+  color: #ffffff;
+} 
 .product-out-of-stock {
-  color: #f44336;
-  background-color: #FFEBEE;
-}
-
-/* Категория */
+ background: #b06b6bff;
+  color: #ffffff;
+} 
 .product-category {
   color: #888;
   font-size: 13px;
@@ -134,46 +114,37 @@
 .category-label {
   font-weight: bold;
 }
-
-/* Скидка */
+ 
 .product-discount {
   color: #FF5722;
   font-size: 14px;
   font-weight: bold;
   margin-top: 5px;
-}
-
-/* Состояние загрузки */
+} 
 .loading-container {
   padding: 20px;
   text-align: center;
-}
-
-/* Состояние пустого каталога */
+} 
 .empty-catalog {
   text-align: center;
   margin-top: 60px;
   padding: 50px;
   background-color: #f9f9f9;
   border-radius: 10px;
-}
-
+} 
 .empty-catalog-icon {
   font-size: 64px;
   margin-bottom: 20px;
-}
-
+} 
 .empty-catalog-title {
   font-size: 20px;
   color: #666;
   margin-bottom: 10px;
-}
-
+} 
 .empty-catalog-subtitle {
   color: #888;
   margin-bottom: 25px;
-}
-
+} 
 .empty-catalog-button {
   padding: 12px 30px;
   background: linear-gradient(135deg, #b06b6bff, #d8a5a5);
@@ -184,13 +155,10 @@
   font-size: 16px;
   font-weight: bold;
   transition: transform 0.2s ease;
-}
-
+} 
 .empty-catalog-button:hover {
   transform: scale(1.05);
-}
-
-/* Ошибка загрузки */
+} 
 .error-container {
   padding: 40px;
   text-align: center;

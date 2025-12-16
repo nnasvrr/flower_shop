@@ -1,4 +1,3 @@
-/* Main.minimal.css */
 .main-container {
   padding: 40px 20px;
   text-align: center;
@@ -29,11 +28,6 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
   text-decoration: none;
   display: inline-block;
-}
-
-.main-cta-button:hover {
-  background-color: #9a5a5a;
-}
+} 

@@ -1,14 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=PT+Sans:wght@300;400;600&family=Roboto:wght@300;400;500&display=swap');
 
 :root {
-  --primary-color: #2E8B57;      
-  --secondary-color: #FF69B4;   
-  --accent-color: #FFD700;       
-  --background-color: #FFF8F0;   
+  --primary-color: #b06b6bff;      
+  --secondary-color: #DEB887;      
+  --background-color: #ffffff;
+  --text-color: #333333; 
   --text-color: #333333;         
   --light-gray: #F5F5F5;
   --white: #FFFFFF;
-
   --font-heading: 'PT Serif', serif;          
   --font-body: 'PT Sans', sans-serif;        
   --font-accent: 'Roboto', sans-serif;       

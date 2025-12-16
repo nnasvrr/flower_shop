@@ -1,6 +1,7 @@
 import Catalog from './pages/Catalog';
 import Login from './pages/Login';
 import Registration from './pages/Registration';
+import Card from './pages/Card'; 
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Main from './pages/Main';
@@ -71,6 +72,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/catalog" element={<Catalog />} />
+            <Route path="/card/:productId" element={<Card />} /> 
             <Route path="/login" element={<Login />} />
             <Route path="/registration" element={<Registration />} />
           </Routes>

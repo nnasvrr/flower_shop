@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { flowerAPI } from '../services/api';
+import { Link } from 'react-router-dom';
 import './Catalog.css';
 
 const Catalog = () => {
@@ -108,9 +109,9 @@ const Catalog = () => {
             </div>
             
             <div className="product-info">
-              <h3 className="product-name">{flower.name}</h3>
-              
-              {/* УДАЛЕН БЛОК С ОПИСАНИЕМ */}
+              <Link to={`/card/${flower.id}`} className="product-name-link">
+                <h3 className="product-name">{flower.name}</h3>
+              </Link>
               
               <div className="product-price-stock">
                 <span className="product-price">
