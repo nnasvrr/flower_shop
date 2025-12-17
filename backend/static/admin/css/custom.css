@@ -1,0 +1,23 @@
+#header {
+    background: #b06b6bff;
+}
+
+#branding h1 {
+    color: white;
+}
+
+div.breadcrumbs {
+    background: #f0e6e6;
+}
+
+.button, input[type=submit], input[type=button] {
+    background: #b06b6bff;
+}
+
+.button:hover, input[type=submit]:hover {
+    background: #9a5a5a;
+}
+.module h2, .module caption, .inline-group h2 {
+    background: #b06b6bff !important;
+    color: white !important;
+}

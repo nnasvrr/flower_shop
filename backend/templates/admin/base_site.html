@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+
+{% load static %}
+
+{% block title %}{{ title }} | FlowerShop Admin{% endblock %}
+
+{% block branding %}
+
+<h1 id="site-name"><a href="{% url 'admin:index' %}"> FlowerShop Admin</a></h1>
+{% endblock %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'admin/css/custom.css' %}">
+{% endblock %}

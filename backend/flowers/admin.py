@@ -1,6 +1,10 @@
 from django.contrib import admin
 from .models import Category, Flower
 
+admin.site.site_header = "FlowerShop Admin"
+admin.site.site_title = "Админка магазина цветов"
+admin.site.index_title = "Панель управления"
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
