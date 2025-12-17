@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Main from './pages/Main';
 import './App.css';
+import About from './pages/About';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -47,6 +48,7 @@ function App() {
               <ul className="nav-links">
                 <li><Link to="/" className="nav-link">Главная</Link></li>
                 <li><Link to="/catalog" className="nav-link">Каталог</Link></li>
+                <li><Link to="/about-us" className="nav-link">О нас</Link></li>
                 
                 {isAuthenticated ? (
                   <>
@@ -75,6 +77,7 @@ function App() {
             <Route path="/card/:productId" element={<Card />} /> 
             <Route path="/login" element={<Login />} />
             <Route path="/registration" element={<Registration />} />
+            <Route path="/about-us" element={<About />} />
           </Routes>
         </main>
 
