@@ -253,7 +253,7 @@
 }
 
 .pagination-btn:disabled {
-  background-color: #ddd;
+  background-color: rgba(154, 90, 90, 0.5);
   cursor: not-allowed;
 }
 

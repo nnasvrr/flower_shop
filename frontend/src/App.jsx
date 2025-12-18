@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Main from './pages/Main';
 import './App.css';
 import About from './pages/About';
+import Profile from './pages/Profile';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,9 +51,10 @@ function App() {
                 <li><Link to="/catalog" className="nav-link">Каталог</Link></li>
                 <li><Link to="/about-us" className="nav-link">О нас</Link></li>
                 
+                
                 {isAuthenticated ? (
                   <>
-                    
+                    <li><Link to={`/profile/${currentUser?.login}`} className="nav-link"> Профиль</Link></li>
                     <li>
                       <button onClick={handleLogout} className="logout-btn">
                         Выйти
@@ -78,6 +80,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/registration" element={<Registration />} />
             <Route path="/about-us" element={<About />} />
+            <Route path="/profile/:username" element={<Profile />} />
           </Routes>
         </main>
 

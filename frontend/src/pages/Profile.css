@@ -1,0 +1,211 @@
+.profile-container {
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.profile-banner {
+  width: 100%;
+  height: 250px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0 0 12px 12px;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.banner-edit-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+
+}
+
+
+
+.profile-content {
+  padding: 20px;
+  margin-top: -60px;
+}
+
+.avatar-section {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid rgb(255, 255, 255);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  overflow: hidden;
+}
+
+.avatar-edit-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+
+}
+
+.avatar-edit-btn:hover {
+  transform: scale(1.1);
+  background: #f8f8f8;
+}
+
+.username {
+  font-size: 28px;
+  color: #333;
+  margin: 0 0 15px 0;
+}
+
+.profile-info {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.bio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #8d8585;
+}
+
+.bio-header h3 {
+  font-size: 22px;
+  color: #333;
+  margin: 0;
+}
+
+.bio-content {
+  margin-top: 10px;
+}
+
+.bio-textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.bio-textarea:focus {
+  outline: none;
+  border-color: #b06b6b;
+}
+
+.bio-text {
+  color: #555;
+  line-height: 1.6;
+  font-size: 16px;
+  margin: 0;
+  min-height: 120px;
+  padding: 5px;
+}
+
+.profile-actions {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.edit-toggle-btn {
+  background: #b06b6b;
+  color: white;
+  border: none;
+  padding: 14px 40px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.3s;
+  min-width: 200px;
+}
+
+
+
+.file-input {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .profile-banner {
+    height: 200px;
+  }
+  
+  .avatar-section {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .avatar-wrapper {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .username {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .profile-info {
+    padding: 20px;
+  }
+  
+  .edit-toggle-btn {
+    width: 100%;
+  }
+}
